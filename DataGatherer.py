@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import sys
 from collections import Counter
 import grain_class
 
@@ -9,8 +8,6 @@ blair_bliss = []
 danielsson = []
 haralick = []
 mz = []
-lh = []
-lw = []
 rls = []
 rf = []
 rc1 = []
@@ -26,8 +23,6 @@ blair_blissHist = 0
 danielssonHist = 0
 haralickHist = 0
 mzHist = 0
-lhHist = 0
-lwHist = 0
 rlsHist = 0
 rfHist = 0
 rc1Hist = 0
@@ -42,8 +37,6 @@ allHistograms = [malinowskaHist,
                  danielssonHist,
                  haralickHist,
                  mzHist,
-                 lhHist,
-                 lwHist,
                  rlsHist,
                  rfHist,
                  rc1Hist,
@@ -57,8 +50,6 @@ names = ['Malinowska',
         'Danielsson',
         'Haralick',
         'Mz',
-        'LH',
-        'LW',
         'RLS',
         'RF',
         'RC1',
@@ -74,8 +65,6 @@ def createSeriesFromRatios(grains):
         malinowska.append(Grain.Malinowska)
         blair_bliss.append(Grain.Blair_Bliss)
         danielsson.append(Grain.Danielsson)
-        lh.append(Grain.LH)
-        lw.append(Grain.LW)
         haralick.append(Grain.Haralick)
         rls.append(Grain.RLS)
         rf.append(Grain.RF)
@@ -91,8 +80,6 @@ def createSeriesFromRatios(grains):
     allRatios.append(danielsson)
     allRatios.append(haralick)
     allRatios.append(mz)
-    allRatios.append(lh)
-    allRatios.append(lw)
     allRatios.append(rls)
     allRatios.append(rf)
     allRatios.append(rc1)
