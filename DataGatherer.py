@@ -22,5 +22,5 @@ def createSeriesFromRatios(grains):
             frames[phase] = phaseFrame
         else:
             frames[phase] = pd.DataFrame()
-
-    print(frames['bainite'])
+    frames['martensite'].to_json(path_or_buf='results.JSON')
+    print(frames['martensite'].to_json())

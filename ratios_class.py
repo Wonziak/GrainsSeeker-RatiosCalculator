@@ -4,19 +4,19 @@ import RatiosConfig as rc
 
 class Ratios:
     def __init__(self):
-        self.Malinowska = float('inf')
-        self.Mz = float('inf')
-        self.Blair_Bliss = float('inf')
-        self.Danielsson = float('inf')
-        self.Haralick = float('inf')
-        self.RLS = float('inf')
-        self.RF = float('inf')
-        self.RC1 = float('inf')
-        self.RC2 = float('inf')
-        self.RCom = float('inf')
-        self.Lp1 = float('inf')
-        self.Lp2 = float('inf')
-        self.Lp3 = float('inf')
+        self.Malinowska = 0
+        self.Mz = 0
+        self.Blair_Bliss = 0
+        self.Danielsson = 0
+        self.Haralick = 0
+        self.RLS = 0
+        self.RF = 0
+        self.RC1 = 0
+        self.RC2 = 0
+        self.RCom = 0
+        self.Lp1 = 0
+        self.Lp2 = 0
+        self.Lp3 = 0
         self.calculatedRatiosDict = {}
 
     def malinowska(self):
@@ -56,8 +56,7 @@ class Ratios:
         self.Lp2 = self.maxDistancePoints / self.perimeter
 
     def lp3(self):
-        # self.Lp3 = do zrobienia
-        self.Lp3 = 0
+        self.Lp3 = self.maxDistancePoints/self.VectorPerpendicularLength
 
     def calculateRatios(self):
         if 'malinowska' in rc.ratiosToCalculateList:
@@ -97,5 +96,9 @@ class Ratios:
             self.lp2()
             self.calculatedRatiosDict['lp2'] = self.Lp2
         if 'lp3' in rc.ratiosToCalculateList:
-            self.lp3()
-            self.calculatedRatiosDict['lp3'] = self.Lp3
+            try:
+                self.lp3()
+            except:
+                self.Lp3 = 0
+            finally:
+                self.calculatedRatiosDict['lp3'] = self.Lp3

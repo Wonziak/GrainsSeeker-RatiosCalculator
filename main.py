@@ -12,15 +12,17 @@ grains = []
 def findContoursAndCalculateRatios(layer, phase):
     ret, thresh = cv2.threshold(layer, 1, 255, 0)
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
-
-    # for i in range(len(contours)):
-    #     ImageConfig.drawCountour(contours[i])
-
     for i in range(len(contours)):
-        grains.append(grain.Grain(contours[i], phase))
+        print('ziarno ', i, ' faza ', phase)
+        if len(contours[i]) > 1:
+            gr = grain.Grain(contours[i], phase)
+            if gr.area > gr.perimeter:
+                gr.startCalculating()
+                grains.append(gr)
 
 
-def mainFunction(image, ratios=[], colors={}):
+
+def main(image, ratios=[], colors={}):
     # PRZEROSOWANIE OBRAZKA ZGODNIE Z KOLORAMI
     if colors:
         ImageConfig.colors_map = colors
@@ -49,7 +51,8 @@ def mainFunction(image, ratios=[], colors={}):
     for phase in range(len(ImageConfig.colors_map)):
         phaseName = list(ImageConfig.colors_map.keys())
         findContoursAndCalculateRatios(PhaseLayers[:, :, phase], phaseName[phase])
-
-    print(len(grains))
-    print(grains[1].minDistaceCenterEdge, grains[1].maxDistaceCenterEdge, grains[1].LW, grains[1].LH)
     dg.createSeriesFromRatios(grains)
+
+
+
+

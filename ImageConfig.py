@@ -7,8 +7,8 @@ colorsNumber = 0
 colors = []
 
 colors_map = {
-    'ferrite': (0, 0, 200),
-    'bainite': (0, 255, 0),
+    'ferrite': (29, 143, 255),
+    'bainite': (172, 255, 46),
     'martensite': (255, 0, 0)
 }
 

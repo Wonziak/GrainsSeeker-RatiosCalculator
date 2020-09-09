@@ -20,9 +20,13 @@ class Grain(ratios_class.Ratios):
         self.minDistaceCenterEdge = 0
         self.maxDistaceCenterEdge = 0
         self.maxDistancePoints = 0
+        self.maxDistanceVectorCoords = []
+        self.VectorPerpendicularLength = 0
         self.LH = 0
         self.LW = 0
         super().__init__()
+
+    def startCalculating(self):
         self.calculateComDistancesHightWidth()
         self.calculateRatios()
 
@@ -33,6 +37,7 @@ class Grain(ratios_class.Ratios):
         self.calculateMaxMinFromCenter()
         self.calculateMaxDistanceGrain()
         self.findMinDistSum()
+        self.findVectorPerendicular()
 
     def getArea(self):  # powierzchnia to domain(współrzędne), area to ilosc punktow
         domain = []
@@ -68,8 +73,7 @@ class Grain(ratios_class.Ratios):
         mindist = float('inf')
         for areaPoint in self.domain:
             for edgePoint in self.edge:
-                dist = self.calculateDistance(areaPoint[0], areaPoint[1], edgePoint[0][0],
-                                              edgePoint[0][1])  # ? czy tutaj rzutować na int
+                dist = self.calculateDistance(areaPoint[0], areaPoint[1], edgePoint[0][0], edgePoint[0][1])
                 if dist < mindist:
                     mindist = dist
             self.minDistanceFromEgdeSum += mindist
@@ -103,13 +107,35 @@ class Grain(ratios_class.Ratios):
 
     def calculateMaxDistanceGrain(self):  # najwięsza odleglość miedzy punktami ziarna
         maxdist = -1
+        coordinates = [0, 0, 0, 0]
         for edgePoint1 in self.edge:
             for edgePoint2 in self.edge:
                 dist = self.calculateDistance(edgePoint1[0][0], edgePoint1[0][1], edgePoint2[0][0], edgePoint2[0][1])
                 if dist > maxdist:
+                    coordinates[0] = edgePoint1[0][0]  # x1
+                    coordinates[1] = edgePoint1[0][1]  # y1
+                    coordinates[2] = edgePoint2[0][0]  # x2
+                    coordinates[3] = edgePoint2[0][1]  # y2
                     maxdist = dist
+
         self.maxDistancePoints = maxdist
+        self.maxDistanceVectorCoords = [coordinates[2] - coordinates[0], coordinates[3] - coordinates[1]]
 
     def calculateDistance(self, x1, y1, x2, y2):
         distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
         return distance
+
+    def calculateDistanceList(self, coordsList):
+        distance = math.sqrt((coordsList[2] - coordsList[0]) ** 2 + (coordsList[3] - coordsList[1]) ** 2)
+        return distance
+
+    def findVectorPerendicular(self):
+        dst = []
+        for edgePoint1 in self.edge:
+            for edgePoint2 in self.edge:
+                if edgePoint1[0][0] == edgePoint2[0][0] and edgePoint1[0][1] == edgePoint2[0][1]:
+                    continue
+                vec = [edgePoint2[0][0] - edgePoint1[0][0], edgePoint2[0][1] - edgePoint1[0][1]]
+                if ((vec[0] * self.maxDistanceVectorCoords[0]) + (vec[0] * self.maxDistanceVectorCoords[1])) == 0:
+                    dst.append(math.sqrt(vec[0] ** 2 + vec[1] ** 2))
+        self.VectorPerpendicularLength = max(dst)
