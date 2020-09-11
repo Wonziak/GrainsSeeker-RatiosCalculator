@@ -4,8 +4,6 @@ image = []
 width = 0
 height = 0
 colorsNumber = 0
-colors = []
-
 colors_map = {
     'ferrite': (29, 143, 255),
     'bainite': (172, 255, 46),

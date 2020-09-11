@@ -4,6 +4,7 @@ import RatiosConfig as rc
 import grain_class as grain
 import DataGatherer as dg
 import numpy as np
+import statistics_ratios_class as src
 import matplotlib.pyplot as plt
 
 grains = []
@@ -52,6 +53,8 @@ def main(image, ratios=[], colors={}):
         phaseName = list(ImageConfig.colors_map.keys())
         findContoursAndCalculateRatios(PhaseLayers[:, :, phase], phaseName[phase])
     dg.createSeriesFromRatios(grains)
+    st = src.Statistics()
+    st.blr()
 
 
 
