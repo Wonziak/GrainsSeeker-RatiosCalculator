@@ -1,11 +1,13 @@
 import ImageConfig as ic
 import itertools
+import grain_class as gc
 
 
 class Statistics:
     def __init__(self):
         self.borderLengthRatio = 0
         self.borderNeighboursCount = {}
+        self.dispertionPhases = {}
 
     def blr(self):
         colors = list(ic.colors_map.keys())
@@ -43,3 +45,13 @@ class Statistics:
             for key, value in self.borderNeighboursCount.items():
                 self.borderNeighboursCount[key] = value / allborderpixels
         print(self.borderNeighboursCount)
+
+    def dispertion(self, grains, scale):
+        area = ic.width * ic.height * (scale ** 2)
+        for phases in ic.colors_map.keys():
+            self.dispertionPhases[phases] = 0
+        for gc.Grain in grains:
+            self.dispertionPhases[gc.Grain.phase] += 1
+        for key, value in self.dispertionPhases.items():
+            self.dispertionPhases[key] = value / area
+        print(self.dispertionPhases)

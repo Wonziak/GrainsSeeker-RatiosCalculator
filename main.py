@@ -55,7 +55,7 @@ def main(image, ratios=[], colors={}):
     dg.createSeriesFromRatios(grains)
     st = src.Statistics()
     st.blr()
-
+    st.dispertion(grains, 1)
 
 
 
