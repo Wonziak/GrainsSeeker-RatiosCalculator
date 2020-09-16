@@ -5,7 +5,6 @@ import grain_class as gc
 
 class Statistics:
     def __init__(self):
-        self.borderLengthRatio = 0
         self.borderNeighboursCount = {}
         self.dispertionPhases = {}
 
@@ -44,7 +43,6 @@ class Statistics:
         if allborderpixels != 0:
             for key, value in self.borderNeighboursCount.items():
                 self.borderNeighboursCount[key] = value / allborderpixels
-        print(self.borderNeighboursCount)
 
     def dispertion(self, grains, scale):
         area = ic.width * ic.height * (scale ** 2)
@@ -54,4 +52,7 @@ class Statistics:
             self.dispertionPhases[gc.Grain.phase] += 1
         for key, value in self.dispertionPhases.items():
             self.dispertionPhases[key] = value / area
-        print(self.dispertionPhases)
+
+    def returnRatios(self):
+        return {'borderNeighbour': self.borderNeighboursCount,
+                'dispertionPhases': self.dispertionPhases}

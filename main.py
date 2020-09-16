@@ -5,7 +5,6 @@ import grain_class as grain
 import DataGatherer as dg
 import numpy as np
 import statistics_ratios_class as src
-import matplotlib.pyplot as plt
 
 grains = []
 
@@ -20,7 +19,6 @@ def findContoursAndCalculateRatios(layer, phase):
             if gr.area > gr.perimeter:
                 gr.startCalculating()
                 grains.append(gr)
-
 
 
 def main(image, ratios=[], colors={}):
@@ -52,10 +50,11 @@ def main(image, ratios=[], colors={}):
     for phase in range(len(ImageConfig.colors_map)):
         phaseName = list(ImageConfig.colors_map.keys())
         findContoursAndCalculateRatios(PhaseLayers[:, :, phase], phaseName[phase])
-    dg.createSeriesFromRatios(grains)
+    print(dg.createSeriesFromRatios(grains))
     st = src.Statistics()
     st.blr()
     st.dispertion(grains, 1)
-
+    print(st.returnRatios())
+    return dg.createSeriesFromRatios(grains), st.returnRatios
 
 

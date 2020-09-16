@@ -19,8 +19,7 @@ def createSeriesFromRatios(grains):
         if phaseSeries:
             phaseFrame = pd.concat(objs=phaseSeries, axis=1)
             phaseFrame = phaseFrame.transpose()
-            frames[phase] = phaseFrame
+            frames[phase] = phaseFrame.to_json()
         else:
-            frames[phase] = pd.DataFrame()
-    frames['martensite'].to_json(path_or_buf='results.JSON')
-    print(frames['martensite'].to_json())
+            frames[phase] = pd.DataFrame().to_json()
+    return frames
