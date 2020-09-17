@@ -19,7 +19,7 @@ def createSeriesFromRatios(grains):
         if phaseSeries:
             phaseFrame = pd.concat(objs=phaseSeries, axis=1)
             phaseFrame = phaseFrame.transpose()
-            frames[phase] = phaseFrame.to_json()
+            frames[phase] = phaseFrame.to_dict()
         else:
-            frames[phase] = pd.DataFrame().to_json()
+            frames[phase] = pd.DataFrame().to_dict()
     return frames

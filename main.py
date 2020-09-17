@@ -9,7 +9,9 @@ import statistics_ratios_class as src
 grains = []
 
 
-def findContoursAndCalculateRatios(layer, phase):
+def findContoursAndCalculateRatios(layer, phase, background):
+    if phase == background:
+        return
     ret, thresh = cv2.threshold(layer, 1, 255, 0)
     contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
     for i in range(len(contours)):
@@ -21,12 +23,13 @@ def findContoursAndCalculateRatios(layer, phase):
                 grains.append(gr)
 
 
-def main(image, ratios=[], colors={}):
+def mainFunction(image, ratios=[], colors={}, background=''):
     # PRZEROSOWANIE OBRAZKA ZGODNIE Z KOLORAMI
     if colors:
         ImageConfig.colors_map = colors
     if ratios:
         rc.ratiosToCalculateList = ratios
+
     rc.tolowercase()
     ImageConfig.image = image
     ImageConfig.height, ImageConfig.width = ImageConfig.image.shape[:2]
@@ -49,12 +52,9 @@ def main(image, ratios=[], colors={}):
     # DLA KAŻDEJ FAZY WYWOŁANIE FUNKCJI SZUKAJĄCEJ ZIAREN
     for phase in range(len(ImageConfig.colors_map)):
         phaseName = list(ImageConfig.colors_map.keys())
-        findContoursAndCalculateRatios(PhaseLayers[:, :, phase], phaseName[phase])
-    print(dg.createSeriesFromRatios(grains))
+        findContoursAndCalculateRatios(PhaseLayers[:, :, phase], phaseName[phase], background)
     st = src.Statistics()
     st.blr()
     st.dispertion(grains, 1)
-    print(st.returnRatios())
-    return dg.createSeriesFromRatios(grains), st.returnRatios
-
-
+    st.onePointProb()
+    return dg.createSeriesFromRatios(grains), st.returnRatios()
