@@ -59,6 +59,7 @@ class Ratios:
         self.Lp3 = self.maxDistancePoints/self.VectorPerpendicularLength
 
     def calculateRatios(self):
+
         if 'malinowska' in rc.ratiosToCalculateList:
             self.malinowska()
             self.calculatedRatiosDict['malinowska'] = self.Malinowska

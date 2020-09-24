@@ -73,6 +73,8 @@ class Grain(ratios_class.Ratios):
         mindist = float('inf')
         for areaPoint in self.domain:
             for edgePoint in self.edge:
+                if areaPoint[0] == edgePoint[0][0] and areaPoint[1] == edgePoint[0][1]:
+                    continue
                 dist = self.calculateDistance(areaPoint[0], areaPoint[1], edgePoint[0][0], edgePoint[0][1])
                 if dist < mindist:
                     mindist = dist
@@ -84,6 +86,8 @@ class Grain(ratios_class.Ratios):
         maxYdist = -1
         for edgePoint1 in self.edge:
             for edgePoint2 in self.edge:
+                if edgePoint1[0][0] == edgePoint2[0][0] and edgePoint1[0][1] == edgePoint2[0][1]:
+                    continue
                 distX = self.calculateDistance(edgePoint1[0][0], 0, edgePoint2[0][0], 0)
                 distY = self.calculateDistance(0, edgePoint1[0][1], 0, edgePoint2[0][1])
                 if distX > maxXdist:
@@ -110,6 +114,8 @@ class Grain(ratios_class.Ratios):
         coordinates = [0, 0, 0, 0]
         for edgePoint1 in self.edge:
             for edgePoint2 in self.edge:
+                if edgePoint1[0][0] == edgePoint2[0][0] and edgePoint1[0][1] == edgePoint2[0][1]:
+                    continue
                 dist = self.calculateDistance(edgePoint1[0][0], edgePoint1[0][1], edgePoint2[0][0], edgePoint2[0][1])
                 if dist > maxdist:
                     coordinates[0] = edgePoint1[0][0]  # x1

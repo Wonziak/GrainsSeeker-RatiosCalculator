@@ -1,15 +1,15 @@
 import cv2
 import ImageConfig
 import RatiosConfig as rc
-import grain_class as grain
+from grain_class import Grain
 import DataGatherer as dg
 import numpy as np
 import statistics_ratios_class as src
+import multiprocessing
 
-grains = []
 
 
-def findContoursAndCalculateRatios(layer, phase, background):
+def findContoursAndCalculateRatios(layer, phase, background, grains):
     if phase == background:
         return
     ret, thresh = cv2.threshold(layer, 1, 255, 0)
@@ -17,13 +17,14 @@ def findContoursAndCalculateRatios(layer, phase, background):
     for i in range(len(contours)):
         print('ziarno ', i, ' faza ', phase)
         if len(contours[i]) > 1:
-            gr = grain.Grain(contours[i], phase)
+            gr = Grain(contours[i], phase)
             if gr.area > gr.perimeter:
                 gr.startCalculating()
                 grains.append(gr)
 
 
 def mainFunction(image, ratios=[], colors={}, background=''):
+    grains = []
     # PRZEROSOWANIE OBRAZKA ZGODNIE Z KOLORAMI
     if colors:
         ImageConfig.colors_map = colors
@@ -52,7 +53,8 @@ def mainFunction(image, ratios=[], colors={}, background=''):
     # DLA KAŻDEJ FAZY WYWOŁANIE FUNKCJI SZUKAJĄCEJ ZIAREN
     for phase in range(len(ImageConfig.colors_map)):
         phaseName = list(ImageConfig.colors_map.keys())
-        findContoursAndCalculateRatios(PhaseLayers[:, :, phase], phaseName[phase], background)
+        findContoursAndCalculateRatios(PhaseLayers[:, :, phase], phaseName[phase], background, grains)
+
     st = src.Statistics()
     st.blr()
     st.dispertion(grains, 1)
