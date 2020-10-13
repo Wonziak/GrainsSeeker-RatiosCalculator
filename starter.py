@@ -1,4 +1,3 @@
-import numpy as np
 import main
 import cv2
 
@@ -11,8 +10,7 @@ if __name__ == '__main__':
         'martensite': (255, 0, 0)
     }
 
-    image = cv2.imread('circle2.png')
-
-    x, y = main.mainFunction(image, colors=colors, ratios=ratios, background='ferrite')
+    image = cv2.imread('circlesPer.png')
+    x, y = main.mainFunction(image, colors=colors, ratios=ratios, background='ferrite', periodical=False)
     print(x, y)
 

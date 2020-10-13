@@ -1,9 +1,5 @@
-import matplotlib.pyplot as plt
-import RatiosConfig as rc
 import ImageConfig as ic
 import pandas as pd
-from collections import Counter
-import grain_class
 pd.options.display.float_format = '{:.15f}'.format
 resultsForEachPhase = []
 
