@@ -105,4 +105,5 @@ def mainFunction(image, ratios=[], colors={}, background='', periodical=False):
     st.blr()
     st.dispertion(grains, 1)
     st.onePointProb()
+    st.linealpath()
     return dg.createSeriesFromRatios(grains), st.returnRatios()

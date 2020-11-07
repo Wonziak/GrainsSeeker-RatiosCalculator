@@ -1,14 +1,19 @@
 import ImageConfig as ic
 import itertools
 import grain_class as gc
+import numpy as np
 
 
 class Statistics:
     def __init__(self):
-        self.imageArea = ic.height*ic.width
+        self.imageArea = ic.height * ic.width
         self.borderNeighboursCountRatio = {}
         self.dispertionPhases = {}
         self.onePointProbability = {}
+        self.linealPath = {}
+        self.angleZero = {}
+        self.angle45 = {}
+        self.angle90 = {}
 
     def blr(self):
         colors = list(ic.colors_map.keys())
@@ -68,7 +73,67 @@ class Statistics:
         for key, value in self.onePointProbability.items():
             self.onePointProbability[key] = value / self.imageArea
 
+    def linealpath(self):
+        for phase in ic.colors_map.keys():
+            self.linealPath[phase] = {'angleZero': np.zeros((ic.width,), dtype=float),
+                                      'angle90': np.zeros((ic.height,), dtype=float),
+                                      'angle45': np.zeros((ic.height,), dtype=float)}
+        colorsDict = {v: k for k, v in ic.colors_map.items()}
+        rng = np.random.default_rng()
+        xCoordinates = rng.choice(ic.width, 50)
+        yCoordinates = rng.choice(ic.height, 50)
+        for point in range(50):
+            x = xCoordinates[point]
+            y = yCoordinates[point]
+            xyColor = (ic.image[y, x, 2], ic.image[y, x, 1], ic.image[y, x, 0])
+            for pointAngleZero in range(ic.width - 1):
+                pointAngleZero = pointAngleZero + 1
+                pointToCheck = x + pointAngleZero
+                if pointToCheck >= ic.width:
+                    pointToCheck = pointToCheck - ic.width
+                pointToCheckColor = (ic.image[y, pointToCheck, 2], ic.image[y, pointToCheck, 1],
+                                     ic.image[y, pointToCheck, 0])
+                if xyColor[0] == pointToCheckColor[0] and xyColor[1] == pointToCheckColor[1] and xyColor[2] == \
+                        pointToCheckColor[2]:
+                    self.linealPath[colorsDict[xyColor]]['angleZero'][pointAngleZero] += 1
+                else:
+                    break
+            for pointAngle90 in range(ic.height - 1):
+                pointAngle90 = pointAngle90 + 1
+                pointToCheck = y + pointAngle90
+                if pointToCheck >= ic.height:
+                    pointToCheck = pointToCheck - ic.height
+                pointToCheckColor = (ic.image[pointToCheck, x, 2], ic.image[pointToCheck, x, 1],
+                                     ic.image[pointToCheck, x, 0])
+                if xyColor[0] == pointToCheckColor[0] and xyColor[1] == pointToCheckColor[1] and xyColor[2] == \
+                        pointToCheckColor[2]:
+                    self.linealPath[colorsDict[xyColor]]['angle90'][pointAngle90] += 1
+                else:
+                    break
+            for pointAngle45 in range(ic.height - 1):
+                pointAngle45 = pointAngle45 + 1
+                pointToCheckY = y - pointAngle45
+                pointToCheckX = x + pointAngle45
+                if pointToCheckX >= ic.width:
+                    pointToCheckX = pointToCheckX - ic.width
+                if pointToCheckY < 0:
+                    pointToCheckY = pointToCheckY + ic.height - 1
+                pointToCheckColor = (
+                ic.image[pointToCheckY, pointToCheckX, 2], ic.image[pointToCheckY, pointToCheckX, 1],
+                ic.image[pointToCheckY, pointToCheckX, 0])
+                if xyColor[0] == pointToCheckColor[0] and xyColor[1] == pointToCheckColor[1] and xyColor[2] == \
+                        pointToCheckColor[2]:
+                    self.linealPath[colorsDict[xyColor]]['angle45'][pointAngle45] += 1
+                else:
+                    break
+        for phase in ic.colors_map.keys():
+            self.linealPath[phase]['angleZero'] = np.delete(self.linealPath[phase]['angleZero'], 0)
+            self.linealPath[phase]['angle45'] = np.delete(self.linealPath[phase]['angle45'], 0)
+            self.linealPath[phase]['angle90'] = np.delete(self.linealPath[phase]['angle90'], 0)
+
     def returnRatios(self):
         return {'borderNeighbour': self.borderNeighboursCountRatio,
                 'dispertionPhases': self.dispertionPhases,
-                'onePointprobability': self.onePointProbability}
+                'onePointprobability': self.onePointProbability,
+                'lineal-path': self.linealPath
+                }

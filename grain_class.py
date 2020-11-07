@@ -3,7 +3,6 @@ import cv2
 import math
 import ratios_class
 
-
 class Grain(ratios_class.Ratios):
     def __init__(self, edge, phase):
         self.edge = edge
