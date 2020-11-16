@@ -58,15 +58,15 @@ def findContoursAndCalculateRatios(layer, phase, background, grains, periodical)
                     grains.append(gr)
 
 
-def mainFunction(image, ratios=[], colors={}, background='', periodical=False):
+def mainFunction(image, ratios=[], statistic_ratios=[], colors={}, background='', periodical=False):
     grains = []
     if colors:
         ImageConfig.colors_map = colors
     if ratios:
         rc.ratiosToCalculateList = ratios
+    if statistic_ratios:
+        src.statsRatiosToCalculateList = statistic_ratios
     rc.tolowercase()
-
-    # ImageConfig.heightOffset, ImageConfig.widthOffset = image.shape[:2]
     ImageConfig.image = image
     ImageConfig.height, ImageConfig.width = ImageConfig.image.shape[:2]
     ImageConfig.imageCopy = image
@@ -86,10 +86,6 @@ def mainFunction(image, ratios=[], colors={}, background='', periodical=False):
                         ImageConfig.image[
                             j, i, 2] == color[0]:  # BGR nie RGB
                     PhaseLayers[j, i, index] = 255
-        # layer = PhaseLayers[:, :, index]
-        # cv2.imshow('bl', layer)
-        # cv2.waitKey(0)
-        # cv2.destroyAllWindows()
         index = index + 1
 
     # DLA KAŻDEJ FAZY WYWOŁANIE FUNKCJI SZUKAJĄCEJ ZIAREN
@@ -101,9 +97,5 @@ def mainFunction(image, ratios=[], colors={}, background='', periodical=False):
 
     ImageConfig.image = ImageConfig.imageCopy
     ImageConfig.height, ImageConfig.width = ImageConfig.image.shape[:2]
-    st = src.Statistics()
-    st.blr()
-    st.dispertion(grains, 1)
-    st.onePointProb()
-    st.linealpath()
-    return dg.createSeriesFromRatios(grains), st.returnRatios()
+    st = src.Statistics(grains, 1)
+    return dg.createSeriesFromRatios(grains), st.calculateRatios()

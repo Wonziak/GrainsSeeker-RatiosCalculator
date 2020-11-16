@@ -1,5 +1,7 @@
 import math
 import RatiosConfig as rc
+import ImageConfig
+import numpy as np
 
 
 class Ratios:
@@ -17,6 +19,7 @@ class Ratios:
         self.Lp1 = 0
         self.Lp2 = 0
         self.Lp3 = 0
+        self.MeanCurvature = 0
         self.calculatedRatiosDict = {}
 
     def malinowska(self):
@@ -56,7 +59,59 @@ class Ratios:
         self.Lp2 = self.maxDistancePoints / self.perimeter
 
     def lp3(self):
-        self.Lp3 = self.maxDistancePoints/self.VectorPerpendicularLength
+        self.Lp3 = self.maxDistancePoints / self.VectorPerpendicularLength
+
+    def meanCurvature(self):
+        edge = []
+        for i in range(len(self.edge)):
+            edge.append(Point(self.edge[i][0][0], self.edge[i][0][1]))
+        edge.insert(0, edge[len(edge) - 1])
+        edge.append(edge[1])
+        i = 1
+        while i < len(edge) - 1:
+            x1 = edge[i - 1].x
+            x2 = edge[i].x
+            x3 = edge[i + 1].x
+            if (x1 == x2 and x2 != x3) or (x2 == x3 and x1 != x2):
+                del edge[i]
+                i = i - 1
+                continue
+            i += 1
+        del edge[0]
+        del edge[len(edge) - 1]
+
+        curvature = []
+        ptCount = 5
+        ptCount2 = int(ptCount / 2)
+        ypts = np.zeros(ptCount, np.uint8)
+        xpts = np.zeros(ptCount, np.uint8)
+
+        for i in range(len(edge)):
+            k = 0
+            for j in range(i - ptCount2, i + ptCount2 + 1):
+                xpts[k] = edge[j % len(edge)].x
+                ypts[k] = edge[j % len(edge)].y
+                k += 1
+            sortedX = np.sort(xpts)
+            if sortedX[0] == sortedX[len(sortedX) - 1]:
+                for j in range(ptCount):
+                    ypts[j] = xpts[j] * math.sin(math.pi / 2) + ypts[j] * math.cos(math.pi / 2)
+            first = self.calculateDerviative(ypts)
+            second = self.calculateDerviative(ypts, derivative=2)
+            if first == 0:
+                continue
+            c = abs(second / math.pow(1 + first * first, 3.0 / 2.0))
+            curvature.append(c)
+        mean = np.mean(curvature)
+        self.MeanCurvature = mean
+
+    def calculateDerviative(self, ys, derivative=1):
+        if derivative == 1:
+            result = (-ys[4] + 8 * ys[3] - 8 * ys[1] + ys[0]) / 12 + (1 / 30) * ys[2]
+            return result
+        if derivative == 2:
+            result = ys[3] - 2 * ys[2] + ys[1]
+            return result
 
     def calculateRatios(self):
 
@@ -97,9 +152,14 @@ class Ratios:
             self.lp2()
             self.calculatedRatiosDict['lp2'] = self.Lp2
         if 'lp3' in rc.ratiosToCalculateList:
-            try:
-                self.lp3()
-            except:
-                self.Lp3 = 0
-            finally:
-                self.calculatedRatiosDict['lp3'] = self.Lp3
+            self.lp3()
+            self.calculatedRatiosDict['lp3'] = self.Lp3
+        if 'curvature' in rc.ratiosToCalculateList:
+            self.meanCurvature()
+            self.calculatedRatiosDict['mean_curvature'] = self.MeanCurvature
+
+
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y

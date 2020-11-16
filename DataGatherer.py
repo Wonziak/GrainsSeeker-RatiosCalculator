@@ -1,6 +1,6 @@
 import ImageConfig as ic
 import pandas as pd
-pd.options.display.float_format = '{:.15f}'.format
+pd.options.display.float_format = '{:.10f}'.format
 resultsForEachPhase = []
 
 

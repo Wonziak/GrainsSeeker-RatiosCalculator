@@ -4,16 +4,22 @@ import grain_class as gc
 import numpy as np
 
 
+statsRatiosToCalculateList = ['BorderNeighbour',
+                              'Dispersion',
+                              'OnePointProbability',
+                              'Linealpath']
+
+
 class Statistics:
-    def __init__(self):
+    def __init__(self, grains, scale=1):
         self.imageArea = ic.height * ic.width
         self.borderNeighboursCountRatio = {}
-        self.dispertionPhases = {}
+        self.dispersionPhases = {}
         self.onePointProbability = {}
         self.linealPath = {}
-        self.angleZero = {}
-        self.angle45 = {}
-        self.angle90 = {}
+        self.calculatedRatios = {}
+        self.grains = grains
+        self.scale = scale
 
     def blr(self):
         colors = list(ic.colors_map.keys())
@@ -51,14 +57,14 @@ class Statistics:
             for key, value in self.borderNeighboursCountRatio.items():
                 self.borderNeighboursCountRatio[key] = value / allborderpixels
 
-    def dispertion(self, grains, scale):
-        area = self.imageArea * (scale ** 2)
+    def dispersion(self):
+        area = self.imageArea * (self.scale ** 2)
         for phases in ic.colors_map.keys():
-            self.dispertionPhases[phases] = 0
-        for gc.Grain in grains:
-            self.dispertionPhases[gc.Grain.phase] += 1
-        for key, value in self.dispertionPhases.items():
-            self.dispertionPhases[key] = value / area
+            self.dispersionPhases[phases] = 0
+        for gc.Grain in self.grains:
+            self.dispersionPhases[gc.Grain.phase] += 1
+        for key, value in self.dispersionPhases.items():
+            self.dispersionPhases[key] = value / area
 
     def onePointProb(self):
         colorsDict = {v: k for k, v in ic.colors_map.items()}
@@ -95,7 +101,7 @@ class Statistics:
                                      ic.image[y, pointToCheck, 0])
                 if xyColor[0] == pointToCheckColor[0] and xyColor[1] == pointToCheckColor[1] and xyColor[2] == \
                         pointToCheckColor[2]:
-                    self.linealPath[colorsDict[xyColor]]['angleZero'][pointAngleZero] += 1
+                    self.linealPath[colorsDict[xyColor]]['angleZero'][pointAngleZero] += 0.02
                 else:
                     break
             for pointAngle90 in range(ic.height - 1):
@@ -107,7 +113,7 @@ class Statistics:
                                      ic.image[pointToCheck, x, 0])
                 if xyColor[0] == pointToCheckColor[0] and xyColor[1] == pointToCheckColor[1] and xyColor[2] == \
                         pointToCheckColor[2]:
-                    self.linealPath[colorsDict[xyColor]]['angle90'][pointAngle90] += 1
+                    self.linealPath[colorsDict[xyColor]]['angle90'][pointAngle90] += 0.02
                 else:
                     break
             for pointAngle45 in range(ic.height - 1):
@@ -119,11 +125,11 @@ class Statistics:
                 if pointToCheckY < 0:
                     pointToCheckY = pointToCheckY + ic.height - 1
                 pointToCheckColor = (
-                ic.image[pointToCheckY, pointToCheckX, 2], ic.image[pointToCheckY, pointToCheckX, 1],
-                ic.image[pointToCheckY, pointToCheckX, 0])
+                    ic.image[pointToCheckY, pointToCheckX, 2], ic.image[pointToCheckY, pointToCheckX, 1],
+                    ic.image[pointToCheckY, pointToCheckX, 0])
                 if xyColor[0] == pointToCheckColor[0] and xyColor[1] == pointToCheckColor[1] and xyColor[2] == \
                         pointToCheckColor[2]:
-                    self.linealPath[colorsDict[xyColor]]['angle45'][pointAngle45] += 1
+                    self.linealPath[colorsDict[xyColor]]['angle45'][pointAngle45] += 0.02
                 else:
                     break
         for phase in ic.colors_map.keys():
@@ -131,9 +137,17 @@ class Statistics:
             self.linealPath[phase]['angle45'] = np.delete(self.linealPath[phase]['angle45'], 0)
             self.linealPath[phase]['angle90'] = np.delete(self.linealPath[phase]['angle90'], 0)
 
-    def returnRatios(self):
-        return {'borderNeighbour': self.borderNeighboursCountRatio,
-                'dispertionPhases': self.dispertionPhases,
-                'onePointprobability': self.onePointProbability,
-                'lineal-path': self.linealPath
-                }
+    def calculateRatios(self):
+        if 'BorderNeighbour' in statsRatiosToCalculateList:
+            self.blr()
+            self.calculatedRatios['BorderNeighbour'] = self.borderNeighboursCountRatio
+        if 'Dispersion' in statsRatiosToCalculateList:
+            self.dispersion()
+            self.calculatedRatios['Dispersion'] = self.dispersionPhases
+        if 'OnePointProbability' in statsRatiosToCalculateList:
+            self.onePointProb()
+            self.calculatedRatios['OnePointProbability'] = self.onePointProbability
+        if 'Linealpath' in statsRatiosToCalculateList:
+            self.linealpath()
+            self.calculatedRatios['Lineal-path'] = self.linealPath
+        return self.calculatedRatios
