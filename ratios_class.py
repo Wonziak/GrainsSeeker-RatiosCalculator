@@ -26,13 +26,14 @@ class Ratios:
         self.Malinowska = self.perimeter / (2 * math.sqrt(math.pi * self.area)) - 1
 
     def blair_bliss(self):
-        self.Blair_Bliss = self.area / math.sqrt(2 * math.pi * self.distanceFromCenterPower)
+        self.Blair_Bliss = self.area / math.sqrt(2 * math.pi * self.distanceFromCenterPowerSum)
 
     def danielsson(self):
         self.Danielsson = (self.area ** 3) / self.minDistanceFromEgdeSum
 
     def haralick(self):
-        self.Haralick = math.sqrt((self.distanceFromCenter ** 2) / (self.area * self.distanceFromCenterPower - 1))
+        self.Haralick = math.sqrt(
+            (self.distanceFromEdgeToCenter ** 2) / (self.area * self.distanceFromEdgeToCenterSquared - 1))
 
     def mz(self):
         self.Mz = (2 * math.sqrt(math.pi * self.area)) / self.perimeter

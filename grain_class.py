@@ -13,8 +13,10 @@ class Grain(ratios_class.Ratios):
         self.getArea()
         self.centerOfMass = []
         self.centerOfMassLocal = []
-        self.distanceFromCenterPower = 0
+        self.distanceFromCenterPowerSum = 0
         self.distanceFromCenter = 0
+        self.distanceFromEdgeToCenter = 0
+        self.distanceFromEdgeToCenterSquared = 0
         self.minDistanceFromEgdeSum = 0
         self.minDistaceCenterEdge = 0
         self.maxDistaceCenterEdge = 0
@@ -31,6 +33,7 @@ class Grain(ratios_class.Ratios):
 
     def calculateComDistancesHightWidth(self):
         self.calculateDistancesSumFromCenter()
+        self.calculateDistancesFromEdgeToCenter()
         self.calculateHeightWidth()
         self.calculateMaxMinFromCenter()
         self.calculateMaxDistanceGrain()
@@ -70,8 +73,18 @@ class Grain(ratios_class.Ratios):
             distanceSumPower += distpower
             # distanceSum += self.calculateDistance(p[0], p[1], self.centerOfMass[0], self.centerOfMass[1])
             distanceSum += dist
-        self.distanceFromCenter = distanceSum
-        self.distanceFromCenterPower = distanceSumPower
+        self.distanceFromCenterPowerSum = distanceSumPower
+
+    def calculateDistancesFromEdgeToCenter(self):
+        distanceSumPower = 0
+        distanceSum = 0
+        for p in self.edge:
+            distpower = (self.centerOfMass[0] - p[0][0]) ** 2 + (self.centerOfMass[1] - p[0][1]) ** 2
+            dist = math.sqrt(distpower)
+            distanceSumPower += distpower
+            distanceSum += dist
+        self.distanceFromEdgeToCenter = distanceSum
+        self.distanceFromEdgeToCenterSquared = distpower
 
     def findMinDistSum(self):  # suma minimalnych odleglosc od krawedzi
         mindist = float('inf')
