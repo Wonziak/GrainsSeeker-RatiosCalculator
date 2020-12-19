@@ -2,7 +2,7 @@ import ImageConfig as ic
 import itertools
 import grain_class as gc
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 statsRatiosToCalculateList = ['BorderNeighbour',
                               'Dispersion',
@@ -137,6 +137,19 @@ class Statistics:
             self.linealPath[phase]['angle45'] = np.delete(self.linealPath[phase]['angle45'], 0)
             self.linealPath[phase]['angle90'] = np.delete(self.linealPath[phase]['angle90'], 0)
 
+        angles = ['angleZero','angle45','angle90' ]
+        x = range(1, ic.width)
+        y = range(1, ic.height)
+        for phase in ic.colors_map.keys():
+            for angle in angles:
+                if angle == 'angleZero':
+                    plt.plot(x, self.linealPath[phase]['angleZero'])
+                else:
+                    plt.plot(y, self.linealPath[phase][angle])
+                plt.xlabel('distance')
+                plt.ylabel('probability')
+                plt.title(phase + " " + angle)
+                plt.show()
     def calculateRatios(self):
         if 'BorderNeighbour' in statsRatiosToCalculateList:
             self.blr()
@@ -149,5 +162,5 @@ class Statistics:
             self.calculatedRatios['OnePointProbability'] = self.onePointProbability
         if 'Linealpath' in statsRatiosToCalculateList:
             self.linealpath()
-            self.calculatedRatios['Lineal-path'] = self.linealPath
+            #self.calculatedRatios['Lineal-path'] = self.linealPath
         return self.calculatedRatios
