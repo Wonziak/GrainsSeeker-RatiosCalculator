@@ -58,7 +58,7 @@ def findContoursAndCalculateRatios(layer, phase, background, grains, periodical)
                     grains.append(gr)
 
 
-def mainFunction(image, ratios=[], statistic_ratios=[], colors={}, background='', periodical=False):
+def mainFunction(image, ratios=[], statistic_ratios=[], colors={}, background='', periodical=False, scale=1):
     grains = []
     if colors:
         ImageConfig.colors_map = colors
@@ -97,5 +97,5 @@ def mainFunction(image, ratios=[], statistic_ratios=[], colors={}, background=''
 
     ImageConfig.image = ImageConfig.imageCopy
     ImageConfig.height, ImageConfig.width = ImageConfig.image.shape[:2]
-    st = src.Statistics(grains, 1)
+    st = src.Statistics(grains, scale=scale)
     return dg.createSeriesFromRatios(grains), st.calculateRatios()

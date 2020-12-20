@@ -64,7 +64,7 @@ class Statistics:
         for gc.Grain in self.grains:
             self.dispersionPhases[gc.Grain.phase] += 1
         for key, value in self.dispersionPhases.items():
-            self.dispersionPhases[key] = value / area
+            self.dispersionPhases[key] = (value / area)*100
 
     def onePointProb(self):
         colorsDict = {v: k for k, v in ic.colors_map.items()}
@@ -137,7 +137,7 @@ class Statistics:
             self.linealPath[phase]['angle45'] = np.delete(self.linealPath[phase]['angle45'], 0)
             self.linealPath[phase]['angle90'] = np.delete(self.linealPath[phase]['angle90'], 0)
 
-        angles = ['angleZero','angle45','angle90' ]
+        angles = ['angleZero', 'angle45', 'angle90']
         x = range(1, ic.width)
         y = range(1, ic.height)
         for phase in ic.colors_map.keys():
