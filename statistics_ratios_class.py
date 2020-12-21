@@ -21,7 +21,7 @@ class Statistics:
         self.grains = grains
         self.scale = scale
 
-    def blr(self):
+    def __blr(self):
         colors = list(ic.colors_map.keys())
         colorsDict = {v: k for k, v in ic.colors_map.items()}
 
@@ -57,7 +57,7 @@ class Statistics:
             for key, value in self.borderNeighboursCountRatio.items():
                 self.borderNeighboursCountRatio[key] = value / allborderpixels
 
-    def dispersion(self):
+    def __dispersion(self):
         area = self.imageArea * (self.scale ** 2)
         for phases in ic.colors_map.keys():
             self.dispersionPhases[phases] = 0
@@ -66,7 +66,7 @@ class Statistics:
         for key, value in self.dispersionPhases.items():
             self.dispersionPhases[key] = (value / area) * 100
 
-    def onePointProb(self):
+    def __onePointProb(self):
         colorsDict = {v: k for k, v in ic.colors_map.items()}
         for phase in ic.colors_map.keys():
             self.onePointProbability[phase] = 0
@@ -79,7 +79,7 @@ class Statistics:
         for key, value in self.onePointProbability.items():
             self.onePointProbability[key] = value / self.imageArea
 
-    def linealpath(self):
+    def __linealpath(self):
         for phase in ic.colors_map.keys():
             self.linealPath[phase] = {'angleZero': np.zeros((ic.width,), dtype=float),
                                       'angle90': np.zeros((ic.height,), dtype=float),
@@ -152,15 +152,15 @@ class Statistics:
 
     def calculateRatios(self):
         if 'BorderNeighbour' in statsRatiosToCalculateList:
-            self.blr()
+            self.__blr()
             self.calculatedRatios['BorderNeighbour'] = self.borderNeighboursCountRatio
         if 'Dispersion' in statsRatiosToCalculateList:
-            self.dispersion()
+            self.__dispersion()
             self.calculatedRatios['Dispersion'] = self.dispersionPhases
         if 'OnePointProbability' in statsRatiosToCalculateList:
-            self.onePointProb()
+            self.__onePointProb()
             self.calculatedRatios['OnePointProbability'] = self.onePointProbability
         if 'Linealpath' in statsRatiosToCalculateList:
-            self.linealpath()
+            self.__linealpath()
             # self.calculatedRatios['Lineal-path'] = self.linealPath
         return self.calculatedRatios

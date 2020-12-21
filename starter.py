@@ -10,5 +10,5 @@ if __name__ == '__main__':
         'martensite': (255, 0, 0),
     }
     image = cv2.imread('images/circ.png')
-    x, y = Rc().calculate_ratios(image=image, ratios=ratios, background='bainite', scale=1, colors=colors)
+    x, y = Rc().calculate_ratios(image=image, background='bainite', scale=1, colors=colors)
     print(x, y)
