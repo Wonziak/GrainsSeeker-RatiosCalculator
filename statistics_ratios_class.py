@@ -64,7 +64,7 @@ class Statistics:
         for gc.Grain in self.grains:
             self.dispersionPhases[gc.Grain.phase] += 1
         for key, value in self.dispersionPhases.items():
-            self.dispersionPhases[key] = (value / area)*100
+            self.dispersionPhases[key] = (value / area) * 100
 
     def onePointProb(self):
         colorsDict = {v: k for k, v in ic.colors_map.items()}
@@ -99,8 +99,7 @@ class Statistics:
                     pointToCheck = pointToCheck - ic.width
                 pointToCheckColor = (ic.image[y, pointToCheck, 2], ic.image[y, pointToCheck, 1],
                                      ic.image[y, pointToCheck, 0])
-                if xyColor[0] == pointToCheckColor[0] and xyColor[1] == pointToCheckColor[1] and xyColor[2] == \
-                        pointToCheckColor[2]:
+                if xyColor[0] == pointToCheckColor[0] and xyColor[1] == pointToCheckColor[1] and xyColor[2] == pointToCheckColor[2]:
                     self.linealPath[colorsDict[xyColor]]['angleZero'][pointAngleZero] += 0.02
                 else:
                     break
@@ -150,6 +149,7 @@ class Statistics:
                 plt.ylabel('probability')
                 plt.title(phase + " " + angle)
                 plt.show()
+
     def calculateRatios(self):
         if 'BorderNeighbour' in statsRatiosToCalculateList:
             self.blr()
@@ -162,5 +162,5 @@ class Statistics:
             self.calculatedRatios['OnePointProbability'] = self.onePointProbability
         if 'Linealpath' in statsRatiosToCalculateList:
             self.linealpath()
-            #self.calculatedRatios['Lineal-path'] = self.linealPath
+            # self.calculatedRatios['Lineal-path'] = self.linealPath
         return self.calculatedRatios
