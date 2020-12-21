@@ -6,6 +6,7 @@ import DataGatherer as dg
 import numpy as np
 import statistics_ratios_class as src
 
+
 class RatiosCalculator():
     def __makePeriodicalImage(self):
         phaseLayersPeriodical = np.zeros((ImageConfig.height * 3, ImageConfig.width * 3, len(ImageConfig.colors_map)),
@@ -25,8 +26,7 @@ class RatiosCalculator():
         cv2.destroyAllWindows()
         ImageConfig.image = phaseLayersPeriodical
 
-
-    def __findContoursAndCalculateRatios(self,layer, phase, background, grains, periodical):
+    def __findContoursAndCalculateRatios(self, layer, phase, background, grains, periodical):
         if phase == background:
             return
         ret, thresh = cv2.threshold(layer, 1, 255, 0)
@@ -57,8 +57,8 @@ class RatiosCalculator():
                         centersOfMass.append(gr.centerOfMassLocal)
                         grains.append(gr)
 
-
-    def calculate_ratios(self, image, ratios=[], statistic_ratios=[], colors={}, background='', periodical=False, scale=1):
+    def calculate_ratios(self, image, ratios=[], statistic_ratios=[], colors={}, background='', periodical=False,
+                         scale=1):
         grains = []
         if colors:
             ImageConfig.colors_map = colors
@@ -96,7 +96,8 @@ class RatiosCalculator():
         # DLA KAŻDEJ FAZY WYWOŁANIE FUNKCJI SZUKAJĄCEJ ZIAREN
         for phase in range(len(ImageConfig.colors_map)):
             phaseName = list(ImageConfig.colors_map.keys())
-            self.__findContoursAndCalculateRatios(PhaseLayers[:, :, phase], phaseName[phase], background, grains, periodical)
+            self.__findContoursAndCalculateRatios(PhaseLayers[:, :, phase], phaseName[phase], background, grains,
+                                                  periodical)
         for grain in grains:
             grain.startCalculating()
 

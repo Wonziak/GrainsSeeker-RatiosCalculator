@@ -1,4 +1,4 @@
-from main import RatiosCalculator as Rc
+from ratios_calculator import RatiosCalculator as Rc
 import cv2
 
 if __name__ == '__main__':
